@@ -165,15 +165,15 @@ def clean()
 
   cvs.each do |cv|
     keep = []
-    puts "Inspecting #{cv['name']}"
+    puts "Inspecting #{cv['label']}"
     cv['versions'].sort_by { |v| v['version'].to_f }.reverse.each do |version|
       if not version['environment_ids'].empty?
-        puts_verbose " #{cv['name']} v#{version['version']} is published to the following environments: #{version['environment_ids']}, skipping."
+        puts_verbose " #{cv['label']} v#{version['version']} is published to the following environments: #{version['environment_ids']}, skipping."
         next
       end
       version_details = @api.resource(:content_view_versions).call(:show, {:id => version['id']})
       if not version_details['composite_content_view_ids'].empty?
-        puts_verbose " #{cv['name']} v#{version['version']} is used by the following composite contentviews: #{version_details['composite_content_view_ids']}, skipping."
+        puts_verbose " #{cv['label']} v#{version['version']} is used by the following composite contentviews: #{version_details['composite_content_view_ids']}, skipping."
         next
       end
       if keep.length < @options[:keep]
@@ -239,12 +239,12 @@ def update()
 
     was_updated = false
 
-    puts "Inspecting #{ccv['name']}"
+    puts "Inspecting #{ccv['label']}"
 
     # loop through the components and check if they are uptodate
     ids = Array.new(ccv['component_ids'])
     ccv['components'].each do |component|
-      puts " Checking #{component['content_view']['name']}"
+      puts " Checking #{component['content_view']['label']}"
 
       # get the desired version for this component from the YAML
       # either the version for the component in this CCV is set
@@ -322,9 +322,9 @@ def promote()
 
   ccvs.each do |ccv|
     next if not ccv['composite'] and not @options[:promote_cvs]
-    next if not @yaml[:promote].include?(ccv['name']) and not @yaml[:promote].include?("all")
+    next if not @yaml[:promote].include?(ccv['label']) and not @yaml[:promote].include?("all")
 
-    puts "Inspecting #{ccv['name']}"
+    puts "Inspecting #{ccv['label']}"
 
     latest_version = ccv['versions'].sort_by { |v| v['version'].to_f }.reverse[0]
     next if ! latest_version
