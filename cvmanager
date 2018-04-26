@@ -357,11 +357,11 @@ def publish()
 
   cvs.each do |cv|
     # if CV is not listed in csv, skip
-    puts_verbose "Checking Content View #{cv['name']}"
-    next if not @yaml[:publish].include?(cv['name'])
+    puts_verbose "Checking Content View #{cv['label']}"
+    next if not @yaml[:publish].include?(cv['label'])
 
     # if the CV is listed, write it
-    puts "Inspecting #{cv['name']} as listed in CSV"
+    puts "Inspecting #{cv['label']} as listed in CSV"
 
     # initialize variables
     needs_publish = false
@@ -395,7 +395,7 @@ def publish()
         # if checkrepo option is on, a deeper check will be done
         if @options[:checkrepos]
           # write some info about repo that we are checking
-          puts " repo #{repo['label']} (id: #{repo['id']}) seems newer than CV #{cv['name']} (id: #{cv['id']}), checking if sync contains new packages."
+          puts " repo #{repo['label']} (id: #{repo['id']}) seems newer than CV #{cv['label']} (id: #{cv['id']}), checking if sync contains new packages."
           # get last sync repo output from foreman task
           sync_task = @api.resource(:foreman_tasks).call(:show, {:id => repo['last_sync']['id']})
           # check if the package contains "No new package.". The opposite is a number of packages.
@@ -447,7 +447,7 @@ def publish()
             needs_publish = true
           end
         else
-          puts " repo #{repo['label']} (id: #{repo['id']}) seems newer than CV #{cv['name']} (id: #{cv['id']}) (#{repo_last_sync} > #{cv_last_published}), lets publish"
+          puts " repo #{repo['label']} (id: #{repo['id']}) seems newer than CV #{cv['label']} (id: #{cv['id']}) (#{repo_last_sync} > #{cv_last_published}), lets publish"
           needs_publish = true
         end
       end
@@ -459,7 +459,7 @@ def publish()
     end
     # finally if the CV has to be published, do it
     if needs_publish
-      puts "Publishing #{cv['name']}"
+      puts "Publishing #{cv['label']}"
       if not @options[:noop]
         req = @api.resource(:content_views).call(:publish, {:id => cv['id'], :description => @options[:description]})
         tasks << req['id']
@@ -467,7 +467,7 @@ def publish()
           tasks = wait(tasks)
         end
       else
-        puts " [noop] published #{cv['name']}"
+        puts " [noop] published #{cv['label']}"
       end
     end
   end
