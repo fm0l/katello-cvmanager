@@ -65,7 +65,7 @@ Example configuration for `cvmanager`:
       :lifecycle: 2
       :keep: 5
       :wait: false
-      :sequential: false
+      :sequential: 1
     :cv:
       example_1: latest
       example_2: 28.0
@@ -85,10 +85,20 @@ Example configuration for `cvmanager`:
 * `lifecycle`: target Lifecycle Environment ID (not name) for `promote`
 * `keep`: how many non-published versions of a Content View shall be kept when doing a `clean`
 * `wait`: should cvmanager wait for tasks to finish, or run them in the background
-* `sequential`: should cvmanager wait for each task to finish before starting the next one
+* `sequential`: how many tasks cvmanager can exec in parallel
 * `checkrepos`: should cvmanager check that repo packages were actually downloaded before flagging for publish, or just publish if a sync executed
 * `promote_cvs`: allow promotion of content-views
 
+
+## Permissions
+
+The following permissions are required to run `cvmanager`:
+
+| Resource | Permissions |
+|----------|-------------|
+| Content Views | view_content_views, publish_content_views, promote_or_remove_content_views, destroy_content_views|
+| Lifecycle Environment | promote_or_remove_content_views_to_environments|
+| Product and Repositories | view_products |
 
 ## Example Workflows
 
